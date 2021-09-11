@@ -5,94 +5,114 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestClientRequestInvalidRequest(t *testing.T) {
+func createTestServer(f http.HandlerFunc) (*httptest.Server, *Client) {
+	ts := httptest.NewServer(f)
+	c := NewClient(ts.Listener.Addr().String(), nil)
+	c.Protocol = "http"
+	return ts, c
+}
+
+func TestClientNewRequestInvalidRequest(t *testing.T) {
 	assert := assert.New(t)
 
-	c := NewClient(Config{})
-	req, err := c.request("/")
+	req, err := NewClient("localhost", nil).NewRequest("/", "", nil)
 
 	assert.Nil(req)
 	assert.Error(err)
 	assert.Contains(err.Error(), "invalid method")
 }
 
-func TestClientGetAuthenticationFails(t *testing.T) {
+func TestClientNewRequestAuthenticationFailure(t *testing.T) {
 	assert := assert.New(t)
-	expErr := errors.New("auth failed")
+	expErr := errors.New("authentication failed")
 
-	c := NewClient(Config{
-		Auth: TestAuthenticator(func(_ *http.Request) error { return expErr }),
-		Host: "localhost",
-	})
+	req, err := NewClient("localhost", TestAuthenticator(func(_ *http.Request) error {
+		return expErr
+	})).NewRequest("GET", "/", nil)
 
-	resp, err := c.get()
-
-	assert.Nil(resp)
+	assert.Nil(req)
 	assert.Error(err)
 	assert.Same(expErr, err)
 }
 
-func TestClientCompanyFailingRequest(t *testing.T) {
+func TestClientDoInvalidMethod(t *testing.T) {
 	assert := assert.New(t)
 
-	c := NewClient(Config{
-		Host: "<>",
-	})
+	resp, err := NewClient("localhost", nil).Do("/", "", nil)
 
-	company, err := c.Company(EnglishCompanyNo(1))
-
-	assert.Nil(company)
+	assert.Nil(resp)
 	assert.Error(err)
-	assert.IsType(&url.Error{}, err)
+	assert.Contains(err.Error(), "invalid method")
 }
 
-func TestClientCompanyInvalidStatusCode(t *testing.T) {
+func TestClientDoErrorExecutingRequest(t *testing.T) {
 	assert := assert.New(t)
 
-	ts := httptest.NewServer(
-		http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-			w.WriteHeader(404)
-		}),
-	)
+	resp, err := NewClient("<>", nil).Do("GET", "", nil)
+
+	assert.Nil(resp)
+	assert.Error(err)
+}
+
+func TestClientDoInvalidStatusCode(t *testing.T) {
+	assert := assert.New(t)
+
+	ts, c := createTestServer(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(401)
+	})
 
 	defer ts.Close()
 
-	c := NewClient(Config{
-		Host: ts.Listener.Addr().String(),
+	resp, err := c.Do("GET", "", nil)
+
+	assert.Nil(resp)
+	assert.Error(err)
+	assert.Same(ErrUnauthorized, err)
+}
+
+func TestClientGetJSONErrorExecutingRequest(t *testing.T) {
+	assert := assert.New(t)
+
+	ts, c := createTestServer(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(404)
 	})
-	c.proto = "http"
 
-	company, err := c.Company(EnglishCompanyNo(1))
+	defer ts.Close()
 
-	assert.Nil(company)
+	err := c.GetJSON("", nil)
+
 	assert.Error(err)
 	assert.Same(ErrNotFound, err)
 }
 
-func TestClientCompanySuccessful(t *testing.T) {
+func TestClientGetJSON(t *testing.T) {
 	assert := assert.New(t)
 
-	ts := httptest.NewServer(
-		http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-			fmt.Fprintf(w, `{"company_name": "Company Name"}`)
-		}),
-	)
+	ts, c := createTestServer(func(w http.ResponseWriter, _ *http.Request) {
+		fmt.Fprintf(w, `{"name": "Name"}`)
+	})
 
 	defer ts.Close()
 
-	c := NewClient(Config{
-		Host: ts.Listener.Addr().String(),
-	})
-	c.proto = "http"
+	var json struct {
+		Name string
+	}
 
-	company, err := c.Company(EnglishCompanyNo(1))
+	err := c.GetJSON("", &json)
 
 	assert.NoError(err)
-	assert.Equal("Company Name", company.Name)
+	assert.Equal("Name", json.Name)
+}
+
+func TestClientCompany(t *testing.T) {
+	assert := assert.New(t)
+
+	c := NewClient("localhost", nil)
+
+	assert.Same(c, c.Company(nil).Client)
 }

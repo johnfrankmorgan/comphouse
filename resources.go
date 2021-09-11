@@ -7,39 +7,38 @@ package comphouse
 type CompanyProfile struct {
 	Accounts struct {
 		AccountingReferenceDate struct {
-			Day   string `json:"day"`
-			Month string `json:"month"`
+			Day   int `json:"day,string"`
+			Month int `json:"month,string"`
 		} `json:"accounting_reference_date"`
 		LastAccounts struct {
-			MadeUpTo string `json:"made_up_to"`
-			Type     struct {
-			} `json:"type"`
+			MadeUpTo string      `json:"made_up_to"`
+			Type     interface{} `json:"type"`
 		} `json:"last_accounts"`
 		NextDue      string `json:"next_due"`
 		NextMadeUpTo string `json:"next_made_up_to"`
-		Overdue      string `json:"overdue"`
+		Overdue      bool   `json:"overdue"`
 	} `json:"accounts"`
 	AnnualReturn struct {
 		LastMadeUpTo string `json:"last_made_up_to"`
 		NextDue      string `json:"next_due"`
 		NextMadeUpTo string `json:"next_made_up_to"`
-		Overdue      string `json:"overdue"`
+		Overdue      bool   `json:"overdue"`
 	} `json:"annual_return"`
 	BranchCompanyDetails struct {
 		BusinessActivity    string `json:"business_activity"`
 		ParentCompanyName   string `json:"parent_company_name"`
 		ParentCompanyNumber string `json:"parent_company_number"`
 	} `json:"branch_company_details"`
-	CanFile               string `json:"can_file"`
-	Name                  string `json:"company_name"`
-	Number                string `json:"company_number"`
-	Status                string `json:"company_status"`
-	StatusDetail          string `json:"company_status_detail"`
+	CanFile               bool   `json:"can_file"`
+	CompanyName           string `json:"company_name"`
+	CompanyNumber         string `json:"company_number"`
+	CompanyStatus         string `json:"company_status"`
+	CompanyStatusDetail   string `json:"company_status_detail"`
 	ConfirmationStatement struct {
 		LastMadeUpTo string `json:"last_made_up_to"`
 		NextDue      string `json:"next_due"`
 		NextMadeUpTo string `json:"next_made_up_to"`
-		Overdue      string `json:"overdue"`
+		Overdue      bool   `json:"overdue"`
 	} `json:"confirmation_statement"`
 	DateOfCessation       string `json:"date_of_cessation"`
 	DateOfCreation        string `json:"date_of_creation"`
@@ -51,31 +50,31 @@ type CompanyProfile struct {
 		} `json:"accounting_requirement"`
 		Accounts struct {
 			AccountPeriodFrom struct {
-				Day   string `json:"day"`
-				Month string `json:"month"`
+				Day   int `json:"day"`
+				Month int `json:"month"`
 			} `json:"account_period_from:"`
 			AccountPeriodTo struct {
-				Day   string `json:"day"`
-				Month string `json:"month"`
+				Day   int `json:"day"`
+				Month int `json:"month"`
 			} `json:"account_period_to"`
 			MustFileWithin struct {
-				Months string `json:"months"`
+				Months int `json:"months"`
 			} `json:"must_file_within"`
 		} `json:"accounts"`
 		BusinessActivity            string `json:"business_activity"`
 		CompanyType                 string `json:"company_type"`
 		GovernedBy                  string `json:"governed_by"`
-		IsACreditFinanceInstitution string `json:"is_a_credit_finance_institution"`
+		IsACreditFinanceInstitution bool   `json:"is_a_credit_finance_institution"`
 		OriginatingRegistry         struct {
 			Country string `json:"country"`
 			Name    string `json:"name"`
 		} `json:"originating_registry"`
 		RegistrationNumber string `json:"registration_number"`
 	} `json:"foreign_company_details"`
-	HasBeenLiquidated          string `json:"has_been_liquidated"`
-	HasCharges                 string `json:"has_charges"`
-	HasInsolvencyHistory       string `json:"has_insolvency_history"`
-	IsCommunityInterestCompany string `json:"is_community_interest_company"`
+	HasBeenLiquidated          bool   `json:"has_been_liquidated"`
+	HasCharges                 bool   `json:"has_charges"`
+	HasInsolvencyHistory       bool   `json:"has_insolvency_history"`
+	IsCommunityInterestCompany bool   `json:"is_community_interest_company"`
 	Jurisdiction               string `json:"jurisdiction"`
 	LastFullMembersListDate    string `json:"last_full_members_list_date"`
 	Links                      struct {
@@ -100,8 +99,38 @@ type CompanyProfile struct {
 		Premises     string `json:"premises"`
 		Region       string `json:"region"`
 	} `json:"registered_office_address"`
-	RegisteredOfficeIsInDispute          string   `json:"registered_office_is_in_dispute"`
+	RegisteredOfficeIsInDispute          bool     `json:"registered_office_is_in_dispute"`
 	SicCodes                             []string `json:"sic_codes"`
 	Type                                 string   `json:"type"`
-	UndeliverableRegisteredOfficeAddress string   `json:"undeliverable_registered_office_address"`
+	UndeliverableRegisteredOfficeAddress bool     `json:"undeliverable_registered_office_address"`
+}
+
+// https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/resources/registeredofficeaddress?v=latest
+type RegisteredOfficeAddress struct {
+	// TODO
+}
+
+// https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/resources/officerlist?v=latest
+type OfficerList struct {
+	// TODO
+}
+
+// https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/resources/officersummary?v=latest
+type OfficerSummary struct {
+	// TODO
+}
+
+// https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/resources/companyregister?v=latest
+type CompanyRegister struct {
+	// TODO
+}
+
+// https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/resources/chargelist?v=latest
+type ChargeList struct {
+	// TODO
+}
+
+// https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/resources/chargedetails?v=latest
+type ChargeDetails struct {
+	// TODO
 }
