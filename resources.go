@@ -145,3 +145,53 @@ type ChargeList struct {
 type ChargeDetails struct {
 	// TODO
 }
+
+// https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/resources/search?v=latest
+type Search struct {
+	Etag  string `json:"etag"`
+	Items []struct {
+		Address struct {
+			AddressLine1 string `json:"address_line_1"`
+			AddressLine2 string `json:"address_line_2"`
+			CareOf       string `json:"care_of"`
+			Country      string `json:"country"`
+			Locality     string `json:"locality"`
+			PoBox        string `json:"po_box"`
+			PostalCode   string `json:"postal_code"`
+			Region       string `json:"region"`
+		} `json:"address"`
+		AddressSnippet        string   `json:"address_snippet"`
+		Description           string   `json:"description"`
+		DescriptionIdentifier []string `json:"description_identifier"`
+		Kind                  string   `json:"kind"`
+		Links                 struct {
+			Self string `json:"self"`
+		} `json:"links"`
+		Matches struct {
+			AddressSnippet []int `json:"address_snippet"`
+			Snippet        []int `json:"snippet"`
+			Title          []int `json:"title"`
+		} `json:"matches"`
+		Snippet string `json:"snippet"`
+		Title   string `json:"title"`
+	} `json:"items"`
+	ItemsPerPage int    `json:"items_per_page"`
+	Kind         string `json:"kind"`
+	StartIndex   int    `json:"start_index"`
+	TotalResults int    `json:"total_results"`
+}
+
+// https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/resources/companysearch?v=latest
+type CompanySearch struct {
+	// TODO
+}
+
+// https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/resources/officersearch?v=latest
+type OfficerSearch struct {
+	// TODO
+}
+
+// https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/resources/disqualifiedofficersearch?v=latest
+type DisqualifiedOfficerSearch struct {
+	// TODO
+}

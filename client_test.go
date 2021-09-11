@@ -147,3 +147,11 @@ func TestClientCompany(t *testing.T) {
 
 	assert.Same(c, c.Company(nil).Client)
 }
+
+func TestClientSearch(t *testing.T) {
+	assert := assert.New(t)
+
+	c := NewClient("localhost", nil)
+
+	assert.Same(c, c.Search().Client)
+}

@@ -23,7 +23,7 @@ func client(t *testing.T) *comphouse.Client {
 	return c
 }
 
-func TestFunctionality(t *testing.T) {
+func TestCompanyProfile(t *testing.T) {
 	type test struct {
 		number comphouse.CompanyNumber
 		name   string
@@ -49,4 +49,43 @@ func TestFunctionality(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestSearchAll(t *testing.T) {
+	assert := assert.New(t)
+
+	search, err := client(t).Search().All(comphouse.SearchParams{Query: "argos"})
+
+	assert.NoError(err)
+	assert.Equal(search.ItemsPerPage, len(search.Items))
+}
+
+func TestSearchCompanies(t *testing.T) {
+	assert := assert.New(t)
+
+	search, err := client(t).Search().Companies(comphouse.SearchParams{Query: "argos"})
+
+	assert.NoError(err)
+	// FIXME: update this once the resources have been added
+	assert.NotNil(search)
+}
+
+func TestSearchOfficers(t *testing.T) {
+	assert := assert.New(t)
+
+	search, err := client(t).Search().Officers(comphouse.SearchParams{Query: "argos"})
+
+	assert.NoError(err)
+	// FIXME: update this once the resources have been added
+	assert.NotNil(search)
+}
+
+func TestSearchDisqualifiedOfficers(t *testing.T) {
+	assert := assert.New(t)
+
+	search, err := client(t).Search().DisqualifiedOfficers(comphouse.SearchParams{Query: "argos"})
+
+	assert.NoError(err)
+	// FIXME: update this once the resources have been added
+	assert.NotNil(search)
 }

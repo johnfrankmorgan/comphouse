@@ -127,3 +127,9 @@ func (m *Client) GetJSON(path string, dest interface{}) error {
 func (m *Client) Company(companyNo CompanyNumber) *CompanyEndpoint {
 	return &CompanyEndpoint{Client: m, Number: companyNo}
 }
+
+// Search creates a new SearchEndpoint that can be used to search for
+// company information
+func (m *Client) Search() *SearchEndpoint {
+	return &SearchEndpoint{Client: m}
+}
