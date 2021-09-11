@@ -12,9 +12,11 @@ type CompanyEndpoint struct {
 // helper method to format a path for a company
 func (m *CompanyEndpoint) path(extra ...string) string {
 	p := "/company/" + m.Number.String()
+
 	if len(extra) > 0 {
 		p += "/" + strings.Join(extra, "/")
 	}
+
 	return p
 }
 

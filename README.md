@@ -7,18 +7,26 @@ A simple client for the Companies House REST API.
 
 ```go
 func getCompanyName(companyNo int) (string, error) {
-	client := comphouse.NewClient(
-		"api.company-information.service.gov.uk",
-		comphouse.APIKey("my-api-key"),
-	)
+    client := comphouse.NewClient(
+        "api.company-information.service.gov.uk",
+        comphouse.APIKey("my-api-key"),
+    )
 
-	company := client.Company(comphouse.EnglishCompanyNo(companyNo))
+    client.Hooks.BeforeRequest = append(client.Hooks.BeforeRequest, func (_ *http.Request) {
+        fmt.Println("executed before sending a request!")
+    })
 
-	profile, err := company.Profile()
-	if err != nil {
-		return "", err
-	}
+    client.Hooks.AfterRequest = append(client.Hooks.AfterRequest, func (_ *http.Response) {
+        fmt.Println("executed after sending a request!")
+    })
 
-	return profile.CompanyName, nil
+    company := client.Company(comphouse.EnglishCompanyNo(companyNo))
+
+    profile, err := company.Profile()
+    if err != nil {
+        return "", err
+    }
+
+    return profile.CompanyName, nil
 }
 ```

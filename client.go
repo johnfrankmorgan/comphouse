@@ -21,7 +21,27 @@ type Client struct {
 	Auth     Authenticator
 	Host     string
 	Protocol string
+	Hooks    Hooks
 	HTTP     *http.Client
+}
+
+// Hooks contains functions that will be executed during the lifecycle
+// of requests
+type Hooks struct {
+	BeforeRequest []func(*http.Request)
+	AfterRequest  []func(*http.Response)
+}
+
+func (m Hooks) execBeforeRequest(req *http.Request) {
+	for _, hook := range m.BeforeRequest {
+		hook(req)
+	}
+}
+
+func (m Hooks) execAfterRequest(resp *http.Response) {
+	for _, hook := range m.AfterRequest {
+		hook(resp)
+	}
 }
 
 // NewClient creates a new Client for the specified host. Requests will be
@@ -68,10 +88,14 @@ func (m *Client) Do(method, path string, body io.Reader) (*http.Response, error)
 		return nil, err
 	}
 
+	m.Hooks.execBeforeRequest(req)
+
 	resp, err := m.HTTP.Do(req)
 	if err != nil {
 		return nil, err
 	}
+
+	m.Hooks.execAfterRequest(resp)
 
 	if err := statusCodeToError(resp.StatusCode); err != nil {
 		return nil, err

@@ -90,7 +90,7 @@ func TestClientGetJSONErrorExecutingRequest(t *testing.T) {
 	assert.Same(ErrNotFound, err)
 }
 
-func TestClientGetJSON(t *testing.T) {
+func TestClientGetJSONSuccessful(t *testing.T) {
 	assert := assert.New(t)
 
 	ts, c := createTestServer(func(w http.ResponseWriter, _ *http.Request) {
@@ -107,6 +107,37 @@ func TestClientGetJSON(t *testing.T) {
 
 	assert.NoError(err)
 	assert.Equal("Name", json.Name)
+}
+
+func TestClientHooks(t *testing.T) {
+	assert := assert.New(t)
+
+	ts, c := createTestServer(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(200)
+	})
+
+	var (
+		beforeRequest int
+		afterRequest  int
+	)
+
+	c.Hooks.BeforeRequest = append(c.Hooks.BeforeRequest, func(_ *http.Request) {
+		beforeRequest++
+	})
+
+	c.Hooks.AfterRequest = append(c.Hooks.AfterRequest, func(_ *http.Response) {
+		afterRequest++
+	})
+
+	defer ts.Close()
+
+	resp, err := c.Get("")
+
+	assert.NoError(err)
+	assert.NotNil(resp)
+
+	assert.Equal(1, beforeRequest)
+	assert.Equal(1, afterRequest)
 }
 
 func TestClientCompany(t *testing.T) {
