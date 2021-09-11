@@ -2,6 +2,9 @@
 
 A simple client for the Companies House REST API.
 
+![CI](https://github.com/johnfrankmorgan/comphouse/workflows/CI/badge.svg)
+[![codecov](https://codecov.io/gh/johnfrankmorgan/comphouse/branch/main/graph/badge.svg?token=OXSB3U3QEX)](https://codecov.io/gh/johnfrankmorgan/comphouse)
+
 
 ## Example Usage
 

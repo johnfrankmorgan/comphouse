@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  test-unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+
+      - name: Unit Test
+        run: |
+          go test -v -coverpkg=./. -coverprofile=/tmp/profile.cov -covermode=atomic ./.
+          go tool cover -func /tmp/profile.cov
+
+      - uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: /tmp/profile.cov
+
+  test-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+
+      - name: E2E Test
+        run: |
+          CH_API_KEY=${{ secrets.CH_API_KEY }} go test -v -coverpkg=./e2e -coverprofile=/tmp/profile.cov ./e2e
+          go tool cover -func /tmp/profile.cov
+
+  vet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+
+      - name: Vet
+        run: |
+          go vet ./...
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Lint
+        uses: golangci/golangci-lint-action@v2
