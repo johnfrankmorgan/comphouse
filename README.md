@@ -33,3 +33,5 @@ func getCompanyName(companyNo int) (string, error) {
     return profile.CompanyName, nil
 }
 ```
+
+See [examples](./examples) for other example usages.

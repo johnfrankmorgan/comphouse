@@ -54,3 +54,16 @@ jobs:
 
       - name: Lint
         uses: golangci/golangci-lint-action@v2
+
+  build-examples:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+
+      - name: Build Examples
+        run: |
+          for f in examples/*.go
+          do
+            go build $f
+          done
