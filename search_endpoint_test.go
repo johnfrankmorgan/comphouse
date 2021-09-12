@@ -84,3 +84,52 @@ func TestSearchEndpointHandlesErrors(t *testing.T) {
 		})
 	}
 }
+
+func TestSearchEndpointDecodesResponses(t *testing.T) {
+	type test struct {
+		name string
+		f    func(c *SearchEndpoint) (interface{}, error)
+	}
+
+	tests := []test{
+		{
+			"SearchEndpoint.All",
+			func(s *SearchEndpoint) (interface{}, error) {
+				return s.All(SearchParams{})
+			},
+		},
+		{
+			"SearchEndpoint.Companies",
+			func(s *SearchEndpoint) (interface{}, error) {
+				return s.Companies(SearchParams{})
+			},
+		},
+		{
+			"SearchEndpoint.Officers",
+			func(s *SearchEndpoint) (interface{}, error) {
+				return s.Officers(SearchParams{})
+			},
+		},
+		{
+			"SearchEndpoint.DisqualifiedOfficers",
+			func(s *SearchEndpoint) (interface{}, error) {
+				return s.DisqualifiedOfficers(SearchParams{})
+			},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			assert := assert.New(t)
+
+			ts, c := createTestServerWithResponse(map[string]string{"company_name": "Company Name"})
+
+			defer ts.Close()
+
+			got, err := test.f(c.Search())
+
+			assert.NoError(err)
+			assert.NotNil(got)
+		})
+	}
+}

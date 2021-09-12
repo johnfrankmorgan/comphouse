@@ -1,6 +1,7 @@
 package comphouse
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -15,6 +16,14 @@ func createTestServer(f http.HandlerFunc) (*httptest.Server, *Client) {
 	c := NewClient(ts.Listener.Addr().String(), nil)
 	c.Protocol = "http"
 	return ts, c
+}
+
+func createTestServerWithResponse(response interface{}) (*httptest.Server, *Client) {
+	return createTestServer(func(w http.ResponseWriter, _ *http.Request) {
+		if err := json.NewEncoder(w).Encode(response); err != nil {
+			panic(err)
+		}
+	})
 }
 
 func TestClientNewRequestInvalidRequest(t *testing.T) {

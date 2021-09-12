@@ -84,3 +84,70 @@ func TestCompanyEndpointHandlesErrors(t *testing.T) {
 		})
 	}
 }
+
+func TestCompanyEndpointDecodesResponses(t *testing.T) {
+	type test struct {
+		name string
+		f    func(c *CompanyEndpoint) (interface{}, error)
+	}
+
+	tests := []test{
+		{
+			"CompanyEndpoint.Profile",
+			func(c *CompanyEndpoint) (interface{}, error) {
+				return c.Profile()
+			},
+		},
+		{
+			"CompanyEndpoint.RegisteredOfficeAddress",
+			func(c *CompanyEndpoint) (interface{}, error) {
+				return c.RegisteredOfficeAddress()
+			},
+		},
+		{
+			"CompanyEndpoint.Officers",
+			func(c *CompanyEndpoint) (interface{}, error) {
+				return c.Officers()
+			},
+		},
+		{
+			"CompanyEndpoint.Appointments",
+			func(c *CompanyEndpoint) (interface{}, error) {
+				return c.Appointments("")
+			},
+		},
+		{
+			"CompanyEndpoint.Registers",
+			func(c *CompanyEndpoint) (interface{}, error) {
+				return c.Registers()
+			},
+		},
+		{
+			"CompanyEndpoint.Charges",
+			func(c *CompanyEndpoint) (interface{}, error) {
+				return c.Charges()
+			},
+		},
+		{
+			"CompanyEndpoint.Charge",
+			func(c *CompanyEndpoint) (interface{}, error) {
+				return c.Charge("")
+			},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			assert := assert.New(t)
+
+			ts, c := createTestServerWithResponse(map[string]string{"company_name": "Company Name"})
+
+			defer ts.Close()
+
+			got, err := test.f(c.Company(EnglishCompanyNo(1)))
+
+			assert.NoError(err)
+			assert.NotNil(got)
+		})
+	}
+}
