@@ -54,7 +54,8 @@ func (m *SearchEndpoint) path(params SearchParams, extra ...string) string {
 	return fmt.Sprintf("%s?%s", p, params.Encode())
 }
 
-// https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/reference/search/search-all?v=latest
+// Search companies, officers and disqualified officers
+// https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/reference/search/search-all
 func (m *SearchEndpoint) All(params SearchParams) (*Search, error) {
 	s := &Search{}
 
@@ -65,7 +66,8 @@ func (m *SearchEndpoint) All(params SearchParams) (*Search, error) {
 	return s, nil
 }
 
-// https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/reference/search/search-companies?v=latest
+// Search company information
+// https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/reference/search/search-companies
 func (m *SearchEndpoint) Companies(params SearchParams) (*CompanySearch, error) {
 	s := &CompanySearch{}
 
@@ -76,7 +78,8 @@ func (m *SearchEndpoint) Companies(params SearchParams) (*CompanySearch, error) 
 	return s, nil
 }
 
-// https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/reference/search/search-officers?v=latest
+// Search for officer information
+// https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/reference/search/search-officers
 func (m *SearchEndpoint) Officers(params SearchParams) (*OfficerSearch, error) {
 	s := &OfficerSearch{}
 
@@ -87,7 +90,8 @@ func (m *SearchEndpoint) Officers(params SearchParams) (*OfficerSearch, error) {
 	return s, nil
 }
 
-// https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/reference/search/search-disqualified-officers?v=latest
+// Search for disqualified officer information
+// https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/reference/search/search-disqualified-officers
 func (m *SearchEndpoint) DisqualifiedOfficers(params SearchParams) (*DisqualifiedOfficerSearch, error) {
 	s := &DisqualifiedOfficerSearch{}
 

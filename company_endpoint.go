@@ -20,7 +20,7 @@ func (m *CompanyEndpoint) path(extra ...string) string {
 	return p
 }
 
-// Profile returns the company's profile information
+// Get the basic company information
 // https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/reference/company-profile/company-profile
 func (m *CompanyEndpoint) Profile() (*CompanyProfile, error) {
 	c := &CompanyProfile{}
@@ -32,7 +32,7 @@ func (m *CompanyEndpoint) Profile() (*CompanyProfile, error) {
 	return c, nil
 }
 
-// RegisteredOfficeAddress returns the company's registered office address
+// Get the current address of a company
 // https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/reference/registered-office-address/registered-office-address
 func (m *CompanyEndpoint) RegisteredOfficeAddress() (*RegisteredOfficeAddress, error) {
 	a := &RegisteredOfficeAddress{}
@@ -44,7 +44,7 @@ func (m *CompanyEndpoint) RegisteredOfficeAddress() (*RegisteredOfficeAddress, e
 	return a, nil
 }
 
-// Officers returns the company's list of officers
+// List of all company officers
 // https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/reference/officers/list
 func (m *CompanyEndpoint) Officers() (*OfficerList, error) {
 	o := &OfficerList{}
@@ -56,7 +56,7 @@ func (m *CompanyEndpoint) Officers() (*OfficerList, error) {
 	return o, nil
 }
 
-// Appointments returns a specific officer for a company
+// Get details of an individual company officer appointment
 // https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/reference/officers/get-a-company-officer-appointment
 func (m *CompanyEndpoint) Appointments(appointmentId string) (*OfficerSummary, error) {
 	o := &OfficerSummary{}
@@ -68,7 +68,7 @@ func (m *CompanyEndpoint) Appointments(appointmentId string) (*OfficerSummary, e
 	return o, nil
 }
 
-// Registers returns the company's registers
+// Get the company registers information
 // https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/reference/registers/company-registers
 func (m *CompanyEndpoint) Registers() (*CompanyRegister, error) {
 	r := &CompanyRegister{}
@@ -80,7 +80,7 @@ func (m *CompanyEndpoint) Registers() (*CompanyRegister, error) {
 	return r, nil
 }
 
-// Charges returns the company's charges
+// List of charges for a company
 // https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/reference/charges/list
 func (m *CompanyEndpoint) Charges() (*ChargeList, error) {
 	c := &ChargeList{}
@@ -92,7 +92,7 @@ func (m *CompanyEndpoint) Charges() (*ChargeList, error) {
 	return c, nil
 }
 
-// Charge returns a specific charge for the company
+// Individual charge information for company
 // https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/reference/charges/get
 func (m *CompanyEndpoint) Charge(chargeId string) (*ChargeDetails, error) {
 	c := &ChargeDetails{}
