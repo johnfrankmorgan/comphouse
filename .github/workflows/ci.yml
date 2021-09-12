@@ -18,7 +18,7 @@ jobs:
 
       - name: Unit Test
         run: |
-          go test -v -coverpkg=./. -coverprofile=/tmp/profile.cov -covermode=atomic ./.
+          go test -coverpkg=./. -coverprofile=/tmp/profile.cov -covermode=atomic ./.
           go tool cover -func /tmp/profile.cov
 
       - uses: codecov/codecov-action@v2
@@ -34,7 +34,7 @@ jobs:
 
       - name: E2E Test
         run: |
-          CH_API_KEY=${{ secrets.CH_API_KEY }} go test -v -coverpkg=./e2e -coverprofile=/tmp/profile.cov ./e2e
+          CH_API_KEY=${{ secrets.CH_API_KEY }} go test -coverpkg=./e2e -coverprofile=/tmp/profile.cov ./e2e
           go tool cover -func /tmp/profile.cov
 
   vet:

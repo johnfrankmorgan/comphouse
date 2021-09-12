@@ -51,41 +51,94 @@ func TestCompanyProfile(t *testing.T) {
 	}
 }
 
-func TestSearchAll(t *testing.T) {
-	assert := assert.New(t)
+func TestAllResourcesCanBeDecoded(t *testing.T) {
+	type test struct {
+		name string
+		f    func(*comphouse.Client) (interface{}, error)
+	}
 
-	search, err := client(t).Search().All(comphouse.SearchParams{Query: "argos"})
+	companyNumber := comphouse.EnglishCompanyNo(1081551)
+	searchParams := comphouse.SearchParams{Query: "argos"}
 
-	assert.NoError(err)
-	assert.Equal(search.ItemsPerPage, len(search.Items))
-}
+	tests := []test{
+		{
+			"CompanyEndpoint.Profile",
+			func(c *comphouse.Client) (interface{}, error) {
+				return c.Company(companyNumber).Profile()
+			},
+		},
+		{
+			"CompanyEndpoint.RegisteredOfficeAddress",
+			func(c *comphouse.Client) (interface{}, error) {
+				return c.Company(companyNumber).RegisteredOfficeAddress()
+			},
+		},
+		{
+			"CompanyEndpoint.Officers",
+			func(c *comphouse.Client) (interface{}, error) {
+				return c.Company(companyNumber).Officers()
+			},
+		},
+		{
+			"CompanyEndpoint.Appointments",
+			func(c *comphouse.Client) (interface{}, error) {
+				return c.Company(companyNumber).Appointments("41_6e9TvJ63ZibtI8sdNGWvOGoI")
+			},
+		},
+		{
+			"CompanyEndpoint.Registers",
+			func(c *comphouse.Client) (interface{}, error) {
+				return c.Company(companyNumber).Registers()
+			},
+		},
 
-func TestSearchCompanies(t *testing.T) {
-	assert := assert.New(t)
+		{
+			"CompanyEndpoint.Charges",
+			func(c *comphouse.Client) (interface{}, error) {
+				return c.Company(companyNumber).Charges()
+			},
+		},
+		{
+			"CompanyEndpoint.Charge",
+			func(c *comphouse.Client) (interface{}, error) {
+				return c.Company(companyNumber).Charge("n-LzQBYIroD60vcrZtWHICCkqhk")
+			},
+		},
+		{
+			"SearchEndpoint.All",
+			func(c *comphouse.Client) (interface{}, error) {
+				return c.Search().All(searchParams)
+			},
+		},
+		{
+			"SearchEndpoint.Companies",
+			func(c *comphouse.Client) (interface{}, error) {
+				return c.Search().Companies(searchParams)
+			},
+		},
+		{
+			"SearchEndpoint.Officers",
+			func(c *comphouse.Client) (interface{}, error) {
+				return c.Search().Officers(searchParams)
+			},
+		},
+		{
+			"SearchEndpoint.DisqualifiedOfficers",
+			func(c *comphouse.Client) (interface{}, error) {
+				return c.Search().DisqualifiedOfficers(searchParams)
+			},
+		},
+	}
 
-	search, err := client(t).Search().Companies(comphouse.SearchParams{Query: "argos"})
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			assert := assert.New(t)
 
-	assert.NoError(err)
-	// FIXME: update this once the resources have been added
-	assert.NotNil(search)
-}
+			got, err := test.f(client(t))
 
-func TestSearchOfficers(t *testing.T) {
-	assert := assert.New(t)
-
-	search, err := client(t).Search().Officers(comphouse.SearchParams{Query: "argos"})
-
-	assert.NoError(err)
-	// FIXME: update this once the resources have been added
-	assert.NotNil(search)
-}
-
-func TestSearchDisqualifiedOfficers(t *testing.T) {
-	assert := assert.New(t)
-
-	search, err := client(t).Search().DisqualifiedOfficers(comphouse.SearchParams{Query: "argos"})
-
-	assert.NoError(err)
-	// FIXME: update this once the resources have been added
-	assert.NotNil(search)
+			if assert.NoError(err) {
+				assert.NotNil(got)
+			}
+		})
+	}
 }
