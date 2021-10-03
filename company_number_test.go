@@ -11,7 +11,7 @@ func TestEnglishCompanyNo(t *testing.T) {
 
 	no := EnglishCompanyNo(100100)
 
-	assert.Equal("00100100", no.String())
+	assert.Equal("00100101", no.Next().String())
 }
 
 func TestScottishCompanyNo(t *testing.T) {
@@ -19,7 +19,7 @@ func TestScottishCompanyNo(t *testing.T) {
 
 	no := ScottishCompanyNo(100100)
 
-	assert.Equal("SC100100", no.String())
+	assert.Equal("SC100101", no.Next().String())
 }
 
 func TestCompanyNumberFromString(t *testing.T) {

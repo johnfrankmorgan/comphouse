@@ -9,6 +9,7 @@ import (
 // CompanyNumber is an interface to convert a value into a valid company number
 type CompanyNumber interface {
 	fmt.Stringer
+	Next() CompanyNumber
 }
 
 // CompanyNumberFromString creates a new CompanyNumber from the provided string
@@ -43,10 +44,20 @@ func (m EnglishCompanyNo) String() string {
 	return fmt.Sprintf("%08d", m)
 }
 
+// Next satisfies the CompanyNumber interface
+func (m EnglishCompanyNo) Next() CompanyNumber {
+	return m + 1
+}
+
 // ScottishCompanyNo is a CompanyNumber implementation for Scottish companies
 type ScottishCompanyNo uint
 
 // String satisfies the CompanyNumber interface
 func (m ScottishCompanyNo) String() string {
 	return fmt.Sprintf("SC%06d", m)
+}
+
+// Next satisfies the CompanyNumber interface
+func (m ScottishCompanyNo) Next() CompanyNumber {
+	return m + 1
 }
